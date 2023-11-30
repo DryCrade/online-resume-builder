@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Online Resume Builder</title>
+    <style>
+       div.templates>img{
+        width: 360px;
+        height: auto;
+        border: 3px black solid;
+       } 
+    </style>
+</head>
+<body>
+    <div class="inputsection">
+        <label for="name">Full name:</label>
+        <input type="text" name="name"><br>
+        <label for="address">Address:</label>
+        <input type="text" name="address"><br>
+        <label for="skills">Skills:</label>
+        <input type="text" name="address"><br>
+        <label for="contact">Contact:</label>
+        <input type="text" name="contact"><br>
+        <span style="font-size: 36px;"><b>Choose template:</b></span>
+        <div class="templates">
+            <img src="white.jpg">
+            <img src="beige.jpg">
+            <img src="resumebg.jpg">
+            <input type="radio" name="template">
+            <label for="template">white</label>
+            <input type="radio" name="template">
+            <label for="template">beige</label>
+            <input type="radio" name="template">
+            <label for="template">aesthetic</label>
+        </div>
+        <div class="generate">
+            <button onclick="DownloadFile('Sample.pdf')">Generate PDF!</button>
+        </div>
+        
+    </div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function DownloadFile(fileName) {
+            //Set the File URL.
+            var url = "Files/" + fileName;
+ 
+            $.ajax({
+                url: url,
+                cache: false,
+                xhr: function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 2) {
+                            if (xhr.status == 200) {
+                                xhr.responseType = "blob";
+                            } else {
+                                xhr.responseType = "text";
+                            }
+                        }
+                    };
+                    return xhr;
+                },
+                success: function (data) {
+                    //Convert the Byte Data to BLOB object.
+                    var blob = new Blob([data], { type: "application/octetstream" });
+ 
+                    //Check the Browser type and download the File.
+                    var isIE = false || !!document.documentMode;
+                    if (isIE) {
+                        window.navigator.msSaveBlob(blob, fileName);
+                    } else {
+                        var url = window.URL || window.webkitURL;
+                        link = url.createObjectURL(blob);
+                        var a = $("<a />");
+                        a.attr("download", fileName);
+                        a.attr("href", link);
+                        $("body").append(a);
+                        a[0].click();
+                        $("body").remove(a);
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
